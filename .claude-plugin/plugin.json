@@ -1,0 +1,19 @@
+{
+  "name": "e2e-saas",
+  "version": "0.1.0",
+  "description": "Frame a SaaS idea with you, then build it end to end: stories, plans, test-driven code, simplification, fresh-context reviews that prove the tests bite, and mechanical gates that never take an agent's word for it.",
+  "author": {
+    "name": "zach0028",
+    "url": "https://github.com/zach0028"
+  },
+  "homepage": "https://github.com/zach0028/e2e-saas-plugin",
+  "repository": "https://github.com/zach0028/e2e-saas-plugin",
+  "license": "MIT",
+  "keywords": ["saas", "agents", "tdd", "code-review", "clean-code", "orchestration", "autonomous"],
+  "dependencies": [
+    "superpowers@claude-plugins-official",
+    "code-simplifier@claude-plugins-official",
+    "pr-review-toolkit@claude-plugins-official",
+    "security-guidance@claude-plugins-official"
+  ]
+}

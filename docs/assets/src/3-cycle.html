@@ -1,0 +1,39 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="card.css"><style>
+.row{display:flex;align-items:stretch;gap:0;margin-top:44px}
+.st{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.box{width:100%;height:124px;border-radius:20px;background:var(--panel);border:1.5px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.box .t{font:700 18px/1 var(--sans)}
+.box .w{font:600 11.5px/1.25 var(--mono);color:var(--muted);padding:0 8px}
+.g{flex:0 0 24px;display:flex;align-items:center;justify-content:center;margin-top:-48px}
+.g span{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--green);color:var(--green);font:700 12px/20px var(--mono);text-align:center}
+.who{margin-top:14px;font:600 12px/1.3 var(--mono)}
+.a .box{border-color:rgba(110,155,255,.55)}.a .who{color:var(--blue)}
+.s .box{border-color:rgba(61,220,151,.55)}.s .who{color:var(--green)}
+.c .box{border-color:rgba(178,140,255,.55)}.c .who{color:var(--violet)}
+.legend{display:flex;gap:12px;margin-top:auto;margin-bottom:58px}
+.back{margin-top:34px;padding:16px 20px;border:1px dashed var(--line);border-radius:14px;font-size:17px;color:var(--muted);line-height:1.5}
+.back b{color:var(--red)} .back i{color:var(--text);font-style:normal}
+</style></head><body><div class="card">
+<div class="kicker">The life of one story</div>
+<h2>Eight steps. Seven gates. Zero self-review.</h2>
+<div class="row">
+<div class="st a"><div class="box"><div class="t">Plan</div><div class="w">premise checked on real code</div></div><div class="who">planner</div></div>
+<div class="g"><span>✓</span></div>
+<div class="st s"><div class="box"><div class="t">Approve</div><div class="w">by rule, or by you</div></div><div class="who">e2e.py</div></div>
+<div class="g"><span>✓</span></div>
+<div class="st a"><div class="box"><div class="t">Build</div><div class="w">red → green → refactor</div></div><div class="who">builder</div></div>
+<div class="g"><span>✓</span></div>
+<div class="st c"><div class="box"><div class="t">Simplify</div><div class="w">same behavior, less code</div></div><div class="who">code-simplifier</div></div>
+<div class="g"><span>✓</span></div>
+<div class="st s"><div class="box"><div class="t">Verify</div><div class="w">checks run, tree pinned</div></div><div class="who">e2e.py</div></div>
+<div class="g"><span>✓</span></div>
+<div class="st a"><div class="box"><div class="t">Review</div><div class="w">fresh context, bite proof</div></div><div class="who">reviewer</div></div>
+<div class="g"><span>✓</span></div>
+<div class="st s"><div class="box"><div class="t">Integrate</div><div class="w">one squash per story</div></div><div class="who">e2e.py</div></div>
+<div class="g"><span>✓</span></div>
+<div class="st s"><div class="box"><div class="t">Check</div><div class="w">build + e2e on the whole</div></div><div class="who">e2e.py</div></div>
+</div>
+<div class="back"><b>Refused?</b> A critical finding sends the story back to the builder with the review as its to-do list — <i>twice at most</i>, then it comes to you. Every finished lot gets a deep multi-agent review before the next one starts.</div>
+<div class="legend"><span class="pill"><span class="dot" style="background:var(--blue)"></span>agent of this plugin</span><span class="pill"><span class="dot" style="background:var(--violet)"></span>companion plugin</span><span class="pill"><span class="dot" style="background:var(--green)"></span>script, no opinion</span></div>
+<div class="foot"><span class="brand">E2E<b>-</b>SaaS</span><span>3 / 6</span></div>
+</div></body></html>

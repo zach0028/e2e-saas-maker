@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="card.css"><style>
+.cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:36px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.lab{font:700 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+pre{font:500 14.5px/1.6 var(--mono);color:var(--text);white-space:pre;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px}
+.k{color:var(--violet)}.f{color:var(--blue)}.x{color:var(--red);text-decoration:line-through;text-decoration-thickness:2px}.ok{color:var(--green)}
+.res{font:600 15px/1.5 var(--mono)}
+.bad{border-color:rgba(255,99,99,.55)}.good{border-color:rgba(61,220,151,.55)}
+.quote{margin-top:30px;font-size:24px;line-height:1.4;letter-spacing:-.01em;max-width:980px}
+.quote em{font-style:normal;color:var(--green)}
+</style></head><body><div class="card">
+<div class="kicker">The bite proof</div>
+<h2>The reviewer breaks the code on purpose.</h2>
+<div class="cols">
+<div class="col"><span class="lab">1 · The invariant</span><pre><span class="k">if</span> (!<span class="f">canEdit</span>(user, doc)) {
+  <span class="k">throw new</span> <span class="f">Forbidden</span>()
+}</pre><div class="res" style="color:var(--muted)">"The point everything rests on", named by the planner.</div></div>
+<div class="col"><span class="lab">2 · Neutralize it</span><pre><span class="k">if</span> (<span class="x">!canEdit(user, doc)</span> <span class="ok">false</span>) {
+  <span class="k">throw new</span> <span class="f">Forbidden</span>()
+}</pre><div class="res" style="color:var(--muted)">Run only the tests that name it. Restore. Prove the tree is clean.</div></div>
+<div class="col"><span class="lab">3 · Count the reds</span>
+<div class="col bad" style="padding:14px 16px"><div class="res"><span style="color:var(--red)">0 red</span> → critical finding:<br>the invariant is untested.</div></div>
+<div class="col good" style="padding:14px 16px"><div class="res"><span class="ok">3 red</span> → the tests bite.<br>Integration can go on.</div></div></div>
+</div>
+<p class="quote">A test that stays green when you delete the rule it names is <em>worse than no test</em> — it hides the hole it claims to cover.</p>
+<div class="foot"><span class="brand">E2E<b>-</b>SaaS</span><span>4 / 6</span></div>
+</div></body></html>

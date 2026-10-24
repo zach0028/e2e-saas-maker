@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "e2e-saas",
+  "description": "E2E-SaaS: from an idea to a shipped SaaS, built by agents that never review their own work.",
+  "owner": {
+    "name": "zach0028",
+    "url": "https://github.com/zach0028"
+  },
+  "allowCrossMarketplaceDependenciesOn": ["claude-plugins-official"],
+  "plugins": [
+    {
+      "name": "e2e-saas",
+      "description": "Frame a SaaS idea with you, then build it end to end with test-driven, simplified, independently reviewed code.",
+      "source": ".",
+      "category": "development"
+    }
+  ]
+}
