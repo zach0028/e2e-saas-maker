@@ -16,13 +16,22 @@ You are asked twice: **approve the scope** at the start, **go live** at the end.
 
 ## Install
 
+One line, in your terminal:
+
+```bash
+claude plugin marketplace add anthropics/claude-plugins-official && claude plugin install e2e-saas-maker --marketplace zach0028/e2e-saas-maker
+```
+
+Or inside Claude Code:
+
 ```text
 /plugin marketplace add zach0028/e2e-saas-maker
 /plugin install e2e-saas-maker@e2e-saas-maker
 ```
 
 The companion plugins come with it: `superpowers` (TDD), `code-simplifier`,
-`pr-review-toolkit`, `security-guidance`, `claude-security`.
+`pr-review-toolkit`, `security-guidance`, `claude-security`. They live in Anthropic's
+official marketplace, which the one-liner adds first; it is usually there already.
 
 ## Use
 
