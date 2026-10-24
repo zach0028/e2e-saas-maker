@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import os
 import re
@@ -434,6 +435,8 @@ def gate_plan_approved(story_id: str) -> None:
         raise Refusal(f"Plan of {story_id} has no valid `approved_by`: approve it with `e2e.py approve`.")
     if by == "loop" and (reason := why_the_loop_cannot_approve(require_story_map().get(story_id), plan, require_story_map())):
         raise Refusal(f"Plan of {story_id} was approved by the loop, which it may not do: {reason}.")
+    if by == "owner" and not owner_approved(story_id, plan):
+        raise Refusal(f"Plan of {story_id} claims the owner's approval, but none is recorded for this version of the plan.")
 
 
 def gate_verify_current(story_id: str) -> None:
@@ -488,6 +491,44 @@ def gate_failure(gate, *args) -> str | None:
     except Refusal as refusal:
         return str(refusal)
     return None
+
+
+# ─── Owner approvals ────────────────────────────────────────────────────────
+#
+# `approved_by: owner` in a plan is only a label: any agent could type it. The approval
+# itself is recorded OUTSIDE the worktrees, in the project's git directory, bound to a
+# fingerprint of the plan. Ticking a task's box keeps the fingerprint; changing a task,
+# a decision or a "must not change" breaks it, and the plan needs approving again.
+
+_APPROVAL_KEYS = ("approved", "approved_by", "approved_on")
+
+
+def plan_fingerprint(plan: str) -> str:
+    lines = [line for line in plan.splitlines() if line.split(":", 1)[0].strip() not in _APPROVAL_KEYS]
+    normalized = "\n".join(re.sub(r"^(\s*(?:\d+\.|-)\s*)\[[xX ]\]", r"\1[ ]", line) for line in lines)
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
+def approvals_path() -> Path:
+    return Path(git("rev-parse", "--path-format=absolute", "--git-common-dir")) / "e2e-owner-approvals.json"
+
+
+def recorded_owner_approvals() -> dict[str, str]:
+    path = approvals_path()
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+
+def record_owner_approval(story_id: str, plan: str) -> None:
+    approvals = recorded_owner_approvals()
+    approvals[story_id] = plan_fingerprint(plan)
+    approvals_path().write_text(json.dumps(approvals, indent=2), encoding="utf-8")
+
+
+def owner_approved(story_id: str, plan: str | None) -> bool:
+    """True only when the owner's recorded approval matches the plan as it is now."""
+    if plan is None or frontmatter(plan).get("approved_by") != "owner":
+        return False
+    return recorded_owner_approvals().get(story_id) == plan_fingerprint(plan)
 
 
 # ─── Who may approve a plan ─────────────────────────────────────────────────
@@ -623,7 +664,7 @@ def story_state(story: Story, story_map: StoryMap, done: set[str]) -> StoryState
     if field_value(review, "Integration allowed") == "yes":
         if missing:
             return state("waiting", detail=", ".join(missing))
-        if (changed := weakened_checks(story.id, load_config())) and head.get("approved_by") != "owner":
+        if (changed := weakened_checks(story.id, load_config())) and not owner_approved(story.id, plan):
             return state("checks-changed", owner=f"{story.id} removes or rewrites the checks {changed}: approve its plan as owner, or send it back")
         return state("to-integrate", "integrate")
     return state("review-unreadable", owner=f"the review of {story.id} has no readable verdict")
@@ -916,7 +957,10 @@ def approve(story_id: str, by: str) -> None:
     if by == "loop" and (reason := why_the_loop_cannot_approve(story, text, story_map)):
         raise Refusal(f"The loop cannot approve {story_id}: {reason}. For the owner.")
     values = {"approved": "yes", "approved_by": by, "approved_on": dt.date.today().isoformat()}
-    path.write_text(set_frontmatter(text, values), encoding="utf-8")
+    approved = set_frontmatter(text, values)
+    path.write_text(approved, encoding="utf-8")
+    if by == "owner":
+        record_owner_approval(story_id, approved)
 
 
 def run_setup(folder: Path, config: Config, story_id: str) -> CheckResult | None:
@@ -1003,11 +1047,34 @@ def verify(story_id: str) -> str:
 
 
 def weakened_checks(story_id: str, config: Config) -> list[str]:
-    """Existing checks the story removes or rewrites. Adding a check is fine; loosening one is the owner's call."""
-    before = build_branch_config(config).checks
-    text = show(story_branch(story_id), CONFIG)
-    after = parse_config(text).checks if text else before
-    return sorted(name for name, command in before.items() if after.get(name) != command)
+    """What the story changes in the gates' own config. Only two changes are free: adding a
+    new check, and filling a field the build branch has left empty (the first stories set
+    things up). Everything else — a check rewritten or removed, a check moved to the slow
+    list, a different setup, design scope or build branch — is the owner's call."""
+    before_text = show(config.build_branch, CONFIG)
+    if before_text is None:
+        return []
+    after_text = show(story_branch(story_id), CONFIG)
+    try:
+        before, after = json.loads(before_text), json.loads(after_text) if after_text else None
+    except json.JSONDecodeError:
+        return [CONFIG]
+    if not isinstance(after, dict):
+        return [CONFIG]
+    changed = []
+    for key in sorted(set(before) | set(after)):
+        old, new = before.get(key), after.get(key)
+        if key == "checks":
+            old, new = old or {}, new or {}
+            changed += [f"checks.{name}" for name, command in old.items() if command and new.get(name) != command]
+        elif key == "slow_checks":
+            demoted = set(new or []) - set(old or [])
+            changed += [f"slow_checks+{name}" for name in sorted(demoted) if (before.get("checks") or {}).get(name)]
+            if set(old or []) - set(new or []):
+                changed.append("slow_checks")
+        elif old and new != old:
+            changed.append(key)
+    return changed
 
 
 def migrations_missing_from_ship_log(story_id: str, config: Config) -> list[str]:
@@ -1042,7 +1109,7 @@ def integrate(story_id: str) -> str:
     gate_plan_approved(story_id)
     gate_verify_current(story_id)
     gate_review_passed(story_id)
-    if (changed := weakened_checks(story_id, config)) and frontmatter(read_story_file(story_id, "plan.md")).get("approved_by") != "owner":
+    if (changed := weakened_checks(story_id, config)) and not owner_approved(story_id, read_story_file(story_id, "plan.md")):
         raise Refusal(f"{story_id} removes or rewrites existing checks {changed}: only a plan approved by the owner may.")
     if forgotten := migrations_missing_from_ship_log(story_id, config):
         raise Refusal(f"{story_id} adds migrations missing from {story_docs(story_id)}/ship.md: {forgotten}")

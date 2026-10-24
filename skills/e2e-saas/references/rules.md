@@ -14,6 +14,10 @@ These are the rules no agent can see anywhere else. When this file and the proje
   the worktree you were given and `e2e/story/<id>`. Anything else — wrong folder, wrong
   branch, detached HEAD — **stop and say so**. Never `git switch`, `checkout <branch>`,
   `stash`, never create a branch or a worktree.
+- **Approvals are recorded, not typed.** Writing `approved: yes` or `approved_by: owner`
+  into a plan opens nothing: the script re-judges loop approvals, and an owner approval
+  only counts when `e2e.py approve --by owner` recorded it, for this exact version of the
+  plan, outside the worktrees. Never edit those lines.
 - **Agents never commit.** `E2E verify` commits the story after running its checks (and
   concludes a merge in progress); the orchestrator commits framing documents. A commit you
   make is a commit nobody verified.
