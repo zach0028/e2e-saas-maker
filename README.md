@@ -10,19 +10,7 @@ agent ever reviews its own code.
 
 ## How it works
 
-```mermaid
-flowchart LR
-    A["💬 Frame<br/>you · ~12 questions"] --> B["🗂️ Stories<br/>reviewed, then you approve"]
-    B --> C
-
-    subgraph C ["🔁 For each story, on its own"]
-        direction LR
-        P[Plan] --> BU["Build<br/>test-first"] --> S[Simplify] --> V["Verify<br/>script runs the checks"] --> R["Review<br/>fresh agent"] --> I[Integrate]
-        R -.->|refused| BU
-    end
-
-    C --> D["🚀 Ship<br/>you say go"]
-```
+![How it works](docs/assets/flow.png)
 
 You are asked twice: **approve the scope** at the start, **go live** at the end.
 

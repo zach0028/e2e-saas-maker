@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="card.css"><style>
+html,body{height:300px}
+.wrap{position:relative;width:1200px;height:300px;padding:24px 28px;display:flex;align-items:center;gap:10px}
+.wrap::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 300px at 85% -20%,rgba(110,155,255,.12),transparent 60%);pointer-events:none}
+.node{flex:0 0 122px;border-radius:16px;background:var(--panel);border:1.5px solid rgba(255,181,71,.6);padding:18px 16px;text-align:center}
+.node .t{font:700 18px/1.1 var(--sans)}.node .w{font:600 13px/1.35 var(--mono);color:var(--amber);margin-top:8px}
+.ar{color:var(--dim);font-size:22px;flex:0 0 auto}
+.loop{flex:1;min-width:0;border:1.5px dashed rgba(110,155,255,.55);border-radius:20px;padding:40px 12px 30px;position:relative}
+.loop .lab{position:absolute;top:12px;left:18px;font:700 13px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+.steps{display:flex;align-items:center;gap:4px}
+.s{flex:1;min-width:0;border-radius:12px;background:var(--panel2);border:1px solid var(--line);padding:12px 6px;text-align:center}
+.s .t{font:700 13.5px/1.1 var(--sans)}.s .w{font:600 10.5px/1.3 var(--mono);color:var(--muted);margin-top:6px}
+.s.g{border-color:rgba(61,220,151,.55)}.s.g .w{color:var(--green)}
+.s.b{border-color:rgba(110,155,255,.55)}
+.s.v{border-color:rgba(178,140,255,.55)}
+.sa{color:var(--dim);font-size:14px}
+.back{position:absolute;bottom:8px;left:0;right:0;text-align:center;font:600 12px/1 var(--mono);color:var(--red)}
+</style></head><body><div class="wrap">
+<div class="node"><div class="t">Frame</div><div class="w">you · ~12<br>questions</div></div><div class="ar">→</div>
+<div class="node" style="border-color:rgba(110,155,255,.55)"><div class="t">Stories</div><div class="w" style="color:var(--blue)">reviewed,<br>you approve</div></div><div class="ar">→</div>
+<div class="loop"><div class="lab">For each story, on its own</div>
+<div class="steps">
+<div class="s b"><div class="t">Plan</div><div class="w">checks premise</div></div><span class="sa">→</span>
+<div class="s b"><div class="t">Build</div><div class="w">test-first</div></div><span class="sa">→</span>
+<div class="s v"><div class="t">Simplify</div><div class="w">same behavior</div></div><span class="sa">→</span>
+<div class="s g"><div class="t">Verify</div><div class="w">script runs checks</div></div><span class="sa">→</span>
+<div class="s b"><div class="t">Review</div><div class="w">fresh agent</div></div><span class="sa">→</span>
+<div class="s g"><div class="t">Integrate</div><div class="w">gates pass</div></div>
+</div><div class="back">↺ refused review → back to Build (twice max, then you)</div></div>
+<div class="ar">→</div>
+<div class="node"><div class="t">Ship</div><div class="w">you say<br>go</div></div>
+</div></body></html>
