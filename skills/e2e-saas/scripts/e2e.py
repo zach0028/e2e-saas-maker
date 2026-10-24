@@ -504,9 +504,13 @@ _APPROVAL_KEYS = ("approved", "approved_by", "approved_on")
 
 
 def plan_fingerprint(plan: str) -> str:
-    lines = [line for line in plan.splitlines() if line.split(":", 1)[0].strip() not in _APPROVAL_KEYS]
-    normalized = "\n".join(re.sub(r"^(\s*(?:\d+\.|-)\s*)\[[xX ]\]", r"\1[ ]", line) for line in lines)
-    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+    """The approval keys are dropped from the FRONTMATTER only; the body is hashed as written,
+    apart from task boxes, which the builder ticks as it goes."""
+    lines = plan.splitlines()
+    end = next((i for i, line in enumerate(lines[1:], start=1) if line.strip() == "---"), 0) if lines[:1] == ["---"] else 0
+    head = [line for line in lines[:end] if line.split(":", 1)[0].strip() not in _APPROVAL_KEYS]
+    body = [re.sub(r"^(\s*(?:\d+\.|-)\s*)\[[xX ]\]", r"\1[ ]", line) for line in lines[end:]]
+    return hashlib.sha256("\n".join(head + body).encode("utf-8")).hexdigest()
 
 
 def approvals_path() -> Path:

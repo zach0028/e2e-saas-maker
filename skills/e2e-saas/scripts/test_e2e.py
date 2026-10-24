@@ -330,6 +330,11 @@ class CycleTest(Project):
         plan.write_text(plan.read_text().replace("1. [x] a task", "1. [ ] a task"))
         e2e.gate_plan_approved("s01-skeleton")  # ticking or unticking keeps the approval
 
+    def test_a_body_line_named_like_an_approval_key_still_counts(self):
+        plan = PLAN.format(id="x", complexity=1, signals="")
+        self.assertNotEqual(e2e.plan_fingerprint(plan), e2e.plan_fingerprint(plan + "approved: do not run migrations\n"))
+        self.assertEqual(e2e.plan_fingerprint(plan), e2e.plan_fingerprint(plan.replace("approved: no", "approved: yes\napproved_by: owner")))
+
     def test_moving_a_check_to_the_slow_list_or_changing_setup_needs_the_owner(self):
         self.frame()
         self.integrate_first_story()
