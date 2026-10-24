@@ -55,7 +55,7 @@ These are the rules no agent can see anywhere else. When this file and the proje
   reproduce, find the root cause, then fix. Retrying until green is not a fix.
 - **A check is only trusted once it has been seen red.** A test that cannot fail protects
   nothing.
-- **Never weaken a check to pass it**: no skipped test, no `@ts-ignore`, no lowered
+- **Never weaken a check to pass it** (the script refuses to integrate a story that removes or rewrites an existing check unless the owner approved its plan): no skipped test, no `@ts-ignore`, no lowered
   threshold, no `eslint-disable`, no catch-all that swallows the error. If a check is
   genuinely wrong, say so in your report and let the orchestrator decide.
 

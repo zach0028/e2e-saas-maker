@@ -290,6 +290,42 @@ class CycleTest(Project):
         with self.assertRaisesRegex(e2e.Refusal, "never fail"):
             e2e.verify("s01-skeleton")
 
+    def test_an_approval_typed_by_an_agent_does_not_open_the_gate(self):
+        self.frame()
+        folder = self.plan("s01-skeleton", signals="data-deletion")
+        plan = folder / "docs/e2e/stories/s01-skeleton/plan.md"
+        plan.write_text(plan.read_text().replace("approved: no", "approved: yes\napproved_by: loop"))
+        with self.assertRaisesRegex(e2e.Refusal, "may not"):
+            e2e.gate_plan_approved("s01-skeleton")
+        plan.write_text(plan.read_text().replace("approved_by: loop\n", ""))
+        with self.assertRaisesRegex(e2e.Refusal, "approved_by"):
+            e2e.gate_plan_approved("s01-skeleton")
+
+    def test_a_story_cannot_loosen_an_existing_check_without_the_owner(self):
+        self.frame()
+        self.integrate_first_story()
+        e2e.check()
+        folder = self.plan("s02-sign-up")
+        e2e.approve("s02-sign-up", "loop")
+        self.set_checks({"test": "test -d docs", "build": "test -d docs", "e2e": "test -f app.txt"}, folder)
+        e2e.verify("s02-sign-up")
+        self.review("s02-sign-up", folder)
+        with self.assertRaisesRegex(e2e.Refusal, "rewrites existing checks"):
+            e2e.integrate("s02-sign-up")
+        self.assertEqual(self.state_of("s02-sign-up")["state"], "checks-changed")
+
+    def test_a_renamed_secret_is_still_refused(self):
+        self.frame()
+        folder = self.plan("s01-skeleton")
+        e2e.approve("s01-skeleton", "loop")
+        self.write("app.txt", "x", folder)
+        (folder / ".gitignore").write_text("")
+        self.write("config.txt", "SECRET=1", folder)
+        sh("git", "add", "config.txt", cwd=folder)
+        sh("git", "commit", "-q", "-m", "tmp", cwd=folder)
+        sh("git", "mv", "config.txt", ".env.production", cwd=folder)
+        self.assertTrue(e2e.verify("s01-skeleton").startswith("FAILED"))
+
     def test_stop_file_empties_the_loop_queue(self):
         self.frame()
         self.write("docs/e2e/STOP", "")

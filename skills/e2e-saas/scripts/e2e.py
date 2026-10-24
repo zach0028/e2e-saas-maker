@@ -422,11 +422,18 @@ def integrated(config: Config) -> set[str]:
 
 
 def gate_plan_approved(story_id: str) -> None:
+    """An `approved: yes` typed by an agent does not open the gate: the approval is re-judged here."""
     plan = read_story_file(story_id, "plan.md")
     if plan is None:
         raise Refusal(f"No plan for {story_id}. Plan it first.")
-    if frontmatter(plan).get("approved") != "yes":
+    head = frontmatter(plan)
+    if head.get("approved") != "yes":
         raise Refusal(f"Plan of {story_id} is not approved (`approved: yes` missing).")
+    by = head.get("approved_by")
+    if by not in ("loop", "owner"):
+        raise Refusal(f"Plan of {story_id} has no valid `approved_by`: approve it with `e2e.py approve`.")
+    if by == "loop" and (reason := why_the_loop_cannot_approve(require_story_map().get(story_id), plan, require_story_map())):
+        raise Refusal(f"Plan of {story_id} was approved by the loop, which it may not do: {reason}.")
 
 
 def gate_verify_current(story_id: str) -> None:
@@ -614,7 +621,11 @@ def story_state(story: Story, story_map: StoryMap, done: set[str]) -> StoryState
     if not review_is_current:
         return state("to-review", "review")
     if field_value(review, "Integration allowed") == "yes":
-        return state("waiting", detail=", ".join(missing)) if missing else state("to-integrate", "integrate")
+        if missing:
+            return state("waiting", detail=", ".join(missing))
+        if (changed := weakened_checks(story.id, load_config())) and head.get("approved_by") != "owner":
+            return state("checks-changed", owner=f"{story.id} removes or rewrites the checks {changed}: approve its plan as owner, or send it back")
+        return state("to-integrate", "integrate")
     return state("review-unreadable", owner=f"the review of {story.id} has no readable verdict")
 
 
@@ -812,7 +823,7 @@ def now() -> str:
 
 def forbidden_staged(folder: Path) -> list[str]:
     """Paths about to be committed that never belong in a repo: dependencies, secrets, databases, blobs."""
-    staged = git("diff", "--cached", "--name-only", "--diff-filter=AM", cwd=folder).splitlines()
+    staged = git("diff", "--cached", "--name-only", "--no-renames", "--diff-filter=ACMR", cwd=folder).splitlines()
     bad = [p for p in staged if FORBIDDEN_STAGED.search(p)]
     bad += [p for p in staged if (folder / p).is_file() and (folder / p).stat().st_size > MAX_STAGED_BYTES]
     return sorted(set(bad))
@@ -991,6 +1002,14 @@ def verify(story_id: str) -> str:
     return f"passed — tree {tree[:10]}"
 
 
+def weakened_checks(story_id: str, config: Config) -> list[str]:
+    """Existing checks the story removes or rewrites. Adding a check is fine; loosening one is the owner's call."""
+    before = build_branch_config(config).checks
+    text = show(story_branch(story_id), CONFIG)
+    after = parse_config(text).checks if text else before
+    return sorted(name for name, command in before.items() if after.get(name) != command)
+
+
 def migrations_missing_from_ship_log(story_id: str, config: Config) -> list[str]:
     """A migration the story adds must be listed in the story's own ship notes."""
     if not config.migration_dirs:
@@ -1023,6 +1042,8 @@ def integrate(story_id: str) -> str:
     gate_plan_approved(story_id)
     gate_verify_current(story_id)
     gate_review_passed(story_id)
+    if (changed := weakened_checks(story_id, config)) and frontmatter(read_story_file(story_id, "plan.md")).get("approved_by") != "owner":
+        raise Refusal(f"{story_id} removes or rewrites existing checks {changed}: only a plan approved by the owner may.")
     if forgotten := migrations_missing_from_ship_log(story_id, config):
         raise Refusal(f"{story_id} adds migrations missing from {story_docs(story_id)}/ship.md: {forgotten}")
 
