@@ -1,4 +1,4 @@
-# E2E-SaaS
+# E2E-SaaS Maker
 
 **Describe your SaaS once. Agents build it end to end.**
 
@@ -17,8 +17,8 @@ You are asked twice: **approve the scope** at the start, **go live** at the end.
 ## Install
 
 ```text
-/plugin marketplace add zach0028/e2e-saas-plugin
-/plugin install e2e-saas@e2e-saas
+/plugin marketplace add zach0028/e2e-saas-maker
+/plugin install e2e-saas-maker@e2e-saas-maker
 ```
 
 The companion plugins come with it: `superpowers` (TDD), `code-simplifier`,
@@ -29,12 +29,12 @@ The companion plugins come with it: `superpowers` (TDD), `code-simplifier`,
 In an empty folder:
 
 ```text
-/e2e-saas:frame "a booking page for yoga teachers"
-/e2e-saas:build
-/e2e-saas:ship
+/e2e-saas-maker:frame "a booking page for yoga teachers"
+/e2e-saas-maker:build
+/e2e-saas-maker:ship
 ```
 
-`/e2e-saas:status` shows where the build is, at any time.
+`/e2e-saas-maker:status` shows where the build is, at any time.
 
 ## What you get
 

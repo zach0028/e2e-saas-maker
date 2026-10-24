@@ -1,13 +1,13 @@
 {
-  "name": "e2e-saas",
+  "name": "e2e-saas-maker",
   "version": "0.1.0",
   "description": "Frame a SaaS idea with you, then build it end to end: stories, plans, test-driven code, simplification, fresh-context reviews that prove the tests bite, and mechanical gates that never take an agent's word for it.",
   "author": {
     "name": "zach0028",
     "url": "https://github.com/zach0028"
   },
-  "homepage": "https://github.com/zach0028/e2e-saas-plugin",
-  "repository": "https://github.com/zach0028/e2e-saas-plugin",
+  "homepage": "https://github.com/zach0028/e2e-saas-maker",
+  "repository": "https://github.com/zach0028/e2e-saas-maker",
   "license": "MIT",
   "keywords": ["saas", "agents", "tdd", "code-review", "clean-code", "orchestration", "autonomous"],
   "dependencies": [

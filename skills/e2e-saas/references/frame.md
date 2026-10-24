@@ -120,7 +120,7 @@ Order stories by dependency; `E2E status` reports any story that depends on a la
 
 ## 4. Story review — fresh context
 
-Launch `e2e-saas:story-reviewer` with the project path. It has no write tool: write its
+Launch `e2e-saas-maker:story-reviewer` with the project path. It has no write tool: write its
 report as-is in `docs/e2e/story-review.md`, ending with `Max severity:` and `Stories ready:`.
 Fix the stories yourself (never the reviewer), run it again until `Stories ready: yes`.
 

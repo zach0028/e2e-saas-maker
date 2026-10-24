@@ -3,6 +3,6 @@ description: "Where the build stands: every story, what the agents are doing, wh
 argument-hint: ""
 ---
 
-Use the `e2e-saas:e2e-saas` skill, phase `status`. Read its `SKILL.md`, then the reference for this phase, and follow it.
+Use the `e2e-saas-maker:e2e-saas` skill, phase `status`. Read its `SKILL.md`, then the reference for this phase, and follow it.
 
 $ARGUMENTS

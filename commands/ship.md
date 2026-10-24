@@ -3,6 +3,6 @@ description: "Final review, ship log with you, merge, deploy and verify from the
 argument-hint: ""
 ---
 
-Use the `e2e-saas:e2e-saas` skill, phase `ship`. Read its `SKILL.md`, then the reference for this phase, and follow it.
+Use the `e2e-saas-maker:e2e-saas` skill, phase `ship`. Read its `SKILL.md`, then the reference for this phase, and follow it.
 
 $ARGUMENTS

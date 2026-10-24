@@ -1,4 +1,4 @@
-# How E2E-SaaS works
+# How E2E-SaaS Maker works
 
 **Describe your SaaS once. Agents build it end to end.**
 
@@ -25,7 +25,7 @@ a script, or a reviewer working in a fresh context.
 
 ### 1. Frame: one session with you
 
-`/e2e-saas:frame` interviews you one question at a time:
+`/e2e-saas-maker:frame` interviews you one question at a time:
 
 - the idea and the job your product does;
 - an optional reference product;
@@ -46,7 +46,7 @@ A separate agent reviews the story map against the PRD before you see it. You ap
 
 ### 2. Build: autonomous rounds
 
-`/e2e-saas:build` runs round after round until the product is done. Each story lives in its
+`/e2e-saas-maker:build` runs round after round until the product is done. Each story lives in its
 own git worktree and goes through eight steps, with a gate between each one:
 
 ![The life of one story](assets/3-cycle.png)
@@ -68,7 +68,7 @@ review. Each finding is verified by hand, and real ones become new stories.
 
 ### 3. Ship: with you
 
-`/e2e-saas:ship` runs a final review of the whole diff and walks the real product in a
+`/e2e-saas-maker:ship` runs a final review of the whole diff and walks the real product in a
 browser. It then goes through the **ship log** with you: accounts, secrets, migrations, DNS
 and webhooks, collected story by story. Nothing touches production without your go. After
 deploying, it checks the live site from the outside, because a green deploy does not prove
@@ -142,20 +142,20 @@ builder and reviewer instructions (`skills/e2e-saas/references/craft.md`). The f
 ## Install
 
 ```text
-/plugin marketplace add zach0028/e2e-saas-plugin
-/plugin install e2e-saas@e2e-saas
+/plugin marketplace add zach0028/e2e-saas-maker
+/plugin install e2e-saas-maker@e2e-saas-maker
 ```
 
 Then, in an empty folder:
 
 ```text
-/e2e-saas:frame "a booking page for yoga teachers"
-/e2e-saas:build
-/e2e-saas:status     # any time
-/e2e-saas:ship
+/e2e-saas-maker:frame "a booking page for yoga teachers"
+/e2e-saas-maker:build
+/e2e-saas-maker:status     # any time
+/e2e-saas-maker:ship
 ```
 
-For long unattended runs: `/loop /e2e-saas:build`. To stop the agents at any time, create
+For long unattended runs: `/loop /e2e-saas-maker:build`. To stop the agents at any time, create
 `docs/e2e/STOP`.
 
 **Requirements:** Claude Code, git ≥ 2.38, Python ≥ 3.9 (standard library only). Run
@@ -202,7 +202,7 @@ picks up exactly where the files are.
 .claude-plugin/        plugin.json (dependencies), marketplace.json
 skills/e2e-saas/       the skill: SKILL.md, references/, templates/, scripts/e2e.py (+ tests)
 agents/                planner, builder, reviewer, story-reviewer
-commands/              /e2e-saas:frame, build, status, ship
+commands/              /e2e-saas-maker:frame, build, status, ship
 docs/assets/           the illustrations (HTML sources in docs/assets/src/)
 ```
 

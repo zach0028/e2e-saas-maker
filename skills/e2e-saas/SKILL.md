@@ -58,10 +58,10 @@ No phase given: run `E2E status` and continue from what it says (no `docs/e2e/` 
 
 | Agent | Role |
 |---|---|
-| `e2e-saas:planner` | Verifies the story's premise against real code, writes `research.md` and `plan.md`. No code. |
-| `e2e-saas:builder` | Implements an approved plan test-first, following `references/craft.md`. Never commits. |
-| `e2e-saas:reviewer` | Fresh-context review: references opened, plan vs diff, tests made to fail on purpose. Writes the verdict. |
-| `e2e-saas:story-reviewer` | Reviews the story map against the PRD before anything is built. Read-only. |
+| `e2e-saas-maker:planner` | Verifies the story's premise against real code, writes `research.md` and `plan.md`. No code. |
+| `e2e-saas-maker:builder` | Implements an approved plan test-first, following `references/craft.md`. Never commits. |
+| `e2e-saas-maker:reviewer` | Fresh-context review: references opened, plan vs diff, tests made to fail on purpose. Writes the verdict. |
+| `e2e-saas-maker:story-reviewer` | Reviews the story map against the PRD before anything is built. Read-only. |
 
 Companion plugins, installed with this one, do the craft work between them:
 

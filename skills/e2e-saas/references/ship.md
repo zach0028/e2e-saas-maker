@@ -4,7 +4,7 @@ When `E2E status` says everything is integrated, checked and reviewed:
 
 1. **The full check, fresh:** `E2E check` on the build branch, green required.
 2. **The final review** of `git diff main...e2e/build`, in parallel, read-only:
-   `e2e-saas:reviewer` in ship mode (coherence between stories, duplicates, what the PRD asked
+   `e2e-saas-maker:reviewer` in ship mode (coherence between stories, duplicates, what the PRD asked
    that nobody built, the graveyard respected) and `pr-review-toolkit:code-reviewer` +
    `pr-review-toolkit:silent-failure-hunter`. Verify each finding; a critical one becomes a
    story and the build goes on. The reviewer's production-baseline table (every "in" item of

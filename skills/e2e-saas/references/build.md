@@ -8,7 +8,7 @@ going with the rest.
 **One-shot mode (default):** run round after round in this session until `E2E status` says
 ship, or only owner items are left. State lives in files, so a context compaction or a
 restart loses nothing: run `E2E status` and carry on.
-**Unattended mode:** `/loop /e2e-saas:build` — one round per firing.
+**Unattended mode:** `/loop /e2e-saas-maker:build` — one round per firing.
 
 ## A round
 
@@ -36,13 +36,13 @@ test suites, builds, browsers).
 
 | Action | What you do |
 |---|---|
-| `plan` | `E2E workshop <id>` (note the path and the setup result; a failed setup is a blocker to report, not to ignore) → launch `e2e-saas:planner` with the worktree path and the id. |
+| `plan` | `E2E workshop <id>` (note the path and the setup result; a failed setup is a blocker to report, not to ignore) → launch `e2e-saas-maker:planner` with the worktree path and the id. |
 | `rewrite` | The research proved the story wrong (`premise: false`). Rewrite the story in `docs/e2e/stories.md` on the build branch from the evidence in `research.md` (never weaker than the PRD asks), commit, delete the worktree's `plan.md`: the next round plans it again — the planner reads the story from the build branch. |
 | `approve` | `E2E approve <id> --by loop`. A refusal is not an error: it is an owner item (see below). |
-| `build` | Launch `e2e-saas:builder` (worktree, id) → then `code-simplifier:code-simplifier` on the worktree: *"Simplify only the code changed in this worktree since `e2e/build` (`git diff e2e/build`, untracked files included). Preserve behavior exactly. Follow the project's conventions in docs/e2e/stack.md. Do not commit."* → then `E2E verify <id>`. |
-| `fix` | Launch `e2e-saas:builder` with "fix pass" in the prompt: `verify.md` (failed checks), `review.md` (refused review) or `conflict.md` (a merge to resolve) is its list → `E2E verify <id>`. |
+| `build` | Launch `e2e-saas-maker:builder` (worktree, id) → then `code-simplifier:code-simplifier` on the worktree: *"Simplify only the code changed in this worktree since `e2e/build` (`git diff e2e/build`, untracked files included). Preserve behavior exactly. Follow the project's conventions in docs/e2e/stack.md. Do not commit."* → then `E2E verify <id>`. |
+| `fix` | Launch `e2e-saas-maker:builder` with "fix pass" in the prompt: `verify.md` (failed checks), `review.md` (refused review) or `conflict.md` (a merge to resolve) is its list → `E2E verify <id>`. |
 | `verify` | `E2E verify <id>` (the code changed after its last record). |
-| `review` | Launch `e2e-saas:reviewer` (worktree, id). No answer, or no verdict lines → write `review.md` yourself with `Review status: blocked`, the concrete cause, the current `Reviewed tree:`, `Integration allowed: no`. Never infer a verdict. Once the cause is fixed, `E2E unblock <id>`. |
+| `review` | Launch `e2e-saas-maker:reviewer` (worktree, id). No answer, or no verdict lines → write `review.md` yourself with `Review status: blocked`, the concrete cause, the current `Reviewed tree:`, `Integration allowed: no`. Never infer a verdict. Once the cause is fixed, `E2E unblock <id>`. |
 | `integrate` | **At most one per round**, so a red check points at one story: `E2E integrate <id>`. A conflict leaves `conflict.md`: next round says `resume`. |
 | `resume` | `E2E resume <id>` merges the current build branch INTO the story. Clean merge → it goes back to `verify`; conflicts → they stay in the worktree and the next round sends the builder (`fix`) to resolve them. Nothing is rebuilt. |
 | `check` | `E2E check` (slow: run it in the background and wait). Every check, build and e2e included, on the integrated code. |
@@ -99,7 +99,7 @@ When every story of a lot is integrated and the check is green, before anything 
    `pr-review-toolkit:code-reviewer`, `pr-review-toolkit:silent-failure-hunter`,
    `pr-review-toolkit:pr-test-analyzer`, `pr-review-toolkit:type-design-analyzer`. Ask each
    for findings with file:line and severity, and to check the security baseline of
-   `references/craft.md`. Companion missing: launch `e2e-saas:reviewer` in lot mode instead.
+   `references/craft.md`. Companion missing: launch `e2e-saas-maker:reviewer` in lot mode instead.
 3. **Verify every finding yourself** against the code before keeping it: reviewers produce
    plausible findings too.
 4. Each real critical or major finding becomes a story (`s<next>-…`, in the hardening lot,
