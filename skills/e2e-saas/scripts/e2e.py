@@ -59,12 +59,15 @@ COMPANIONS = {
     "code-simplifier": "the simplification pass after every story",
     "pr-review-toolkit": "the lot reviews (silent failures, tests, type design)",
     "security-guidance": "security warnings on every edit",
+    "claude-security": "the security scan of every lot and of the whole code before going live",
 }
+SECURITY_SCAN_OUTCOMES = ("clean", "findings-filed", "unavailable")
 # Never committed by `verify`, whatever the project's .gitignore says.
 FORBIDDEN_STAGED = re.compile(
     r"(^|/)(node_modules|\.next|\.turbo|coverage|playwright-report|test-results)/"
     r"|(^|/)\.env(?!\.example$)[^/]*$"
     r"|\.(db|sqlite|sqlite3|log)$"
+    r"|(^|/)CLAUDE-SECURITY-[^/]*/"
 )
 MAX_STAGED_BYTES = 5_000_000
 BASE_GITIGNORE = """node_modules/
@@ -79,6 +82,7 @@ test-results/
 *.db
 *.sqlite
 .DS_Store
+CLAUDE-SECURITY-*/
 """
 
 # A check that cannot fail is a lie told by a green light.
@@ -692,8 +696,13 @@ def check_state(config: Config, done: set[str]) -> str:
 
 
 def lot_review_done(lot: str) -> bool:
+    """Done means reviewed AND security-scanned: a scan that did not run says so, with its reason."""
     path = project_root() / DOCS / "lots" / f"lot-{lot}-review.md"
-    return path.exists() and field_value(path.read_text(encoding="utf-8"), "Lot review") == "done"
+    if not path.exists():
+        return False
+    text = path.read_text(encoding="utf-8")
+    scan = (field_value(text, "Security scan") or "").split(" ", 1)[0]
+    return field_value(text, "Lot review") == "done" and scan in SECURITY_SCAN_OUTCOMES
 
 
 def framing_started() -> bool:

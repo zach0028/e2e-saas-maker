@@ -9,11 +9,21 @@
   "homepage": "https://github.com/zach0028/e2e-saas-maker",
   "repository": "https://github.com/zach0028/e2e-saas-maker",
   "license": "MIT",
-  "keywords": ["saas", "agents", "tdd", "code-review", "clean-code", "orchestration", "autonomous"],
+  "keywords": [
+    "saas",
+    "agents",
+    "tdd",
+    "code-review",
+    "clean-code",
+    "orchestration",
+    "autonomous",
+    "security"
+  ],
   "dependencies": [
     "superpowers@claude-plugins-official",
     "code-simplifier@claude-plugins-official",
     "pr-review-toolkit@claude-plugins-official",
-    "security-guidance@claude-plugins-official"
+    "security-guidance@claude-plugins-official",
+    "claude-security@claude-plugins-official"
   ]
 }

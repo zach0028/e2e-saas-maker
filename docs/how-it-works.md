@@ -64,12 +64,17 @@ own git worktree and goes through eight steps, with a gate between each one:
 
 When a lot is finished, the plugin runs a **deep review** before the next lot starts. Four
 review agents work in parallel: silent failures, test quality, type design and general code
-review. Each finding is verified by hand, and real ones become new stories.
+review. Alongside them, **[Claude Security](https://claude.com/marketplace/plugins/claude-security)**
+scans everything that changed since the last scanned lot; each candidate finding is challenged
+by its own verifier panel and comes with a patch file. Every real finding becomes a new story
+(the patch is the builder's starting point, still test-first). A lot review only counts as done
+when it records the scan's outcome: clean, findings filed, or unavailable with a reason.
 
 ### 3. Ship: with you
 
-`/e2e-saas-maker:ship` runs a final review of the whole diff and walks the real product in a
-browser. It then goes through the **ship log** with you: accounts, secrets, migrations, DNS
+`/e2e-saas-maker:ship` runs a final review of the whole diff, a **full Claude Security scan of
+the codebase** (nothing goes live with a verified critical or high finding open), and walks the
+real product in a browser. It then goes through the **ship log** with you: accounts, secrets, migrations, DNS
 and webhooks, collected story by story. Nothing touches production without your go. After
 deploying, it checks the live site from the outside, because a green deploy does not prove
 the site answers.
@@ -134,6 +139,7 @@ rules, they are the core of how code gets written:
 | `code-simplifier` | The simplification pass after every story |
 | `pr-review-toolkit` | The lot reviews: silent failures, test quality, type design, code review |
 | `security-guidance` | Security warnings on every edit |
+| [`claude-security`](https://claude.com/marketplace/plugins/claude-security) | A scan of every finished lot and of the whole codebase before going live, findings verified by a panel and delivered as patches |
 
 Clean-code principles, a security baseline and a performance baseline are built into the
 builder and reviewer instructions (`skills/e2e-saas/references/craft.md`). The fresh-context
@@ -191,7 +197,7 @@ picks up exactly where the files are.
 - **It builds a first version, not a company.** Expect a solid, tested v1 of the scope you
   approved. Judgment calls about the product stay yours.
 - **It spends tokens.** Every story uses four agents (plan, build, simplify, review), and
-  every lot runs four more reviewers. That is the price of not trusting a single context.
+  every lot runs four more reviewers plus a security scan. That is the price of not trusting a single context.
 - **Legal pages are templates.** Terms and privacy are drafted for the product and flagged
   for your review; they are not legal advice.
 - **Production needs you.** Accounts, secrets, DNS and the go-live are yours by design.

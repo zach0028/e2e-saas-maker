@@ -377,6 +377,17 @@ class CycleTest(Project):
         sh("git", "mv", "config.txt", ".env.production", cwd=folder)
         self.assertTrue(e2e.verify("s01-skeleton").startswith("FAILED"))
 
+    def test_a_lot_review_without_its_security_scan_line_is_not_done(self):
+        self.frame()
+        self.integrate_first_story()
+        e2e.check()
+        review = self.root / "docs/e2e/lots/lot-0-review.md"
+        self.write("docs/e2e/lots/lot-0-review.md", "Lot review: done\n")
+        self.assertFalse(e2e.lot_review_done("0"))
+        self.assertIn({"story": None, "action": "lot-review", "lot": "0"}, e2e.status()["for_the_loop"])
+        review.write_text("Security scan: unavailable — no Workflow tool in this session\nLot review: done\n")
+        self.assertTrue(e2e.lot_review_done("0"))
+
     def test_stop_file_empties_the_loop_queue(self):
         self.frame()
         self.write("docs/e2e/STOP", "")

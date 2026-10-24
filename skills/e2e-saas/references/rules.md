@@ -55,6 +55,8 @@ These are the rules no agent can see anywhere else. When this file and the proje
 
 - How code is written: `references/craft.md` (TDD, clean code, simplification, security,
   performance). How it is tested: `references/testing.md`.
+- **A security finding is a story, never a shrug.** Verified critical and high findings
+  from `claude-security` become repair stories; nothing ships with one open.
 - **A red check is never "flaky" until proven.** Use `superpowers:systematic-debugging`:
   reproduce, find the root cause, then fix. Retrying until green is not a fix.
 - **A check is only trusted once it has been seen red.** A test that cannot fail protects

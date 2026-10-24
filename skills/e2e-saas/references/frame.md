@@ -20,7 +20,8 @@ lines it prints, once.
 (`../<project>.e2e/`). Ask the owner to run the `/add-dir` line that `init` prints, and to
 run the build in a permission mode that lets agents edit files and run the project's
 commands without a prompt each time (auto-accept edits, plus an allowlist for the package
-manager and the test tools). A build that stops on a permission prompt is not one shot.
+manager and the test tools). A build that stops on a permission prompt is not one shot. Auto mode also lets the
+`claude-security` scans run unattended at each lot.
 
 The PRD, stack and story templates are in `${CLAUDE_PLUGIN_ROOT}/skills/e2e-saas/templates/`:
 copy each one into `docs/e2e/` only when you are ready to fill it — `E2E status` treats an

@@ -22,7 +22,7 @@ You are asked twice: **approve the scope** at the start, **go live** at the end.
 ```
 
 The companion plugins come with it: `superpowers` (TDD), `code-simplifier`,
-`pr-review-toolkit`, `security-guidance`.
+`pr-review-toolkit`, `security-guidance`, `claude-security`.
 
 ## Use
 
@@ -43,6 +43,7 @@ In an empty folder:
 | **Tested code** | every task starts with a failing test |
 | **Clean code** | simplified after each story, clean-code rules built in |
 | **Real reviews** | a fresh agent breaks the code on purpose to prove the tests catch it |
+| **Security-scanned** | every lot scanned by Claude Security, a full scan before go-live; findings become fixes |
 | **Design system** | generated from shadcn/ui and your brand; hard-coded colors are rejected |
 | **Production-ready** | auth, billing, legal pages, security, SEO: decided with you, then checked |
 | **Your call on prod** | nothing touches `main` or production without your go |

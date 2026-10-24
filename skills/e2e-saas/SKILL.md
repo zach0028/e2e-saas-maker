@@ -71,6 +71,7 @@ Companion plugins, installed with this one, do the craft work between them:
 | `code-simplifier` | the `code-simplifier:code-simplifier` pass after every build, before verification |
 | `pr-review-toolkit` | the lot review: `silent-failure-hunter`, `pr-test-analyzer`, `type-design-analyzer`, `code-reviewer` |
 | `security-guidance` | warnings on every edit, without being asked |
+| `claude-security` | a scan of every finished lot's changes and of the whole code before going live; findings verified by a panel, turned into patch files, then into repair stories. Run it from this session (it needs the Workflow tool) |
 
 `E2E doctor` says which companions are present. A missing one is never silently skipped:
 the step falls back to the guidance in `references/craft.md`, and the record says so.

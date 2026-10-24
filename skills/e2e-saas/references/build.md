@@ -102,10 +102,26 @@ When every story of a lot is integrated and the check is green, before anything 
    `references/craft.md`. Companion missing: launch `e2e-saas-maker:reviewer` in lot mode instead.
 3. **Verify every finding yourself** against the code before keeping it: reviewers produce
    plausible findings too.
-4. Each real critical or major finding becomes a story (`s<next>-…`, in the hardening lot,
-   with the finding and its evidence in the notes). Fixes only — the graveyard still holds.
-5. Write `docs/e2e/lots/lot-<n>-review.md`: the range, the reviewers run, kept and dropped
-   findings with why, the stories created, and the last line `Lot review: done`. Commit.
+4. **The security scan** — run the `claude-security:claude-security` skill yourself (it
+   needs this session's Workflow tool; it cannot be delegated to a subagent), job **scan
+   changes**, on the range since the last scanned commit: `<last>..HEAD` of the build branch,
+   where `<last>` is the `Security scanned through:` commit of the previous lot review (the
+   first lot: the commit `init` made). Effort `medium`, `high` for a lot that touched auth,
+   billing or tenancy. Tell it the scan is pre-approved by the build so it does not stop to
+   confirm the cost. It writes `CLAUDE-SECURITY-<date>/` (gitignored); for findings, run its
+   **suggest patches** job on them too.
+5. Each real critical or major finding — from the reviewers or the scan — becomes a story
+   (`s<next>-…`, in the hardening lot, `Kind: repair` if it is a vulnerability already
+   integrated; the finding, its evidence and the scan's patch file path in the notes). The
+   builder applies the patch only as a starting point, test-first. Fixes only — the
+   graveyard still holds.
+6. Write `docs/e2e/lots/lot-<n>-review.md`: the range, the reviewers run, kept and dropped
+   findings with why, the scan's verified findings by severity, the stories created, then
+   `Security scanned through: <HEAD sha>`, `Security scan: <clean | findings-filed |
+   unavailable — reason>`, and the last line `Lot review: done`. Commit. **The script counts
+   a lot review as done only with a `Security scan:` line**: a scan that could not run (no
+   Workflow tool, the companion missing) is written as `unavailable` with the reason, never
+   left out.
 
 ## Never
 
